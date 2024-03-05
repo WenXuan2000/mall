@@ -26,15 +26,19 @@ func NewRemoveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoveLogi
 }
 
 func (l *RemoveLogic) Remove(in *order.RemoveRequest) (*order.RemoveResponse, error) {
-	// todo: add your logic here and delete this line
-	var res = &model.Order{}
-	if ok, err := model.HaveOderByid(l.svcCtx.OrderModel, in.Id, res); ok {
-		return nil, status.Error(100, "订单不存在")
-	} else if err != nil {
-		return nil, err
-	}
-	if err := l.svcCtx.OrderModel.Delete(res).Error; err != nil {
+	// 查询订单是否存在
+	res, err := l.svcCtx.OrderModel.FindOne(l.ctx, in.Id)
+	if err != nil {
+		if err == model.ErrNotFound {
+			return nil, status.Error(100, "订单不存在")
+		}
 		return nil, status.Error(500, err.Error())
 	}
+
+	err = l.svcCtx.OrderModel.Delete(l.ctx, res.Id)
+	if err != nil {
+		return nil, status.Error(500, err.Error())
+	}
+
 	return &order.RemoveResponse{}, nil
 }

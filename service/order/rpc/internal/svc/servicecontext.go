@@ -1,9 +1,8 @@
 package svc
 
 import (
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"github.com/zeromicro/go-zero/zrpc"
-	"gorm.io/gorm"
-	"mall/common/modeInit"
 	"mall/service/order/model"
 	"mall/service/order/rpc/internal/config"
 	"mall/service/product/rpc/productclient"
@@ -14,17 +13,16 @@ import (
 
 type ServiceContext struct {
 	Config     config.Config
-	OrderModel *gorm.DB
+	OrderModel model.OrderModel
 	UserRpc    user.UserClient
 	ProductRpc product.ProductClient
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	db := modeInit.InitGorm(c.Mysql.DataSource)
-	db.AutoMigrate(&model.Order{})
+	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	return &ServiceContext{
 		Config:     c,
-		OrderModel: db,
+		OrderModel: model.NewOrderModel(conn, c.CacheRedis),
 		UserRpc:    userclient.NewUser(zrpc.MustNewClient(c.UserRpc)),
 		ProductRpc: productclient.NewProduct(zrpc.MustNewClient(c.ProductRpc)),
 	}

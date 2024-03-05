@@ -28,30 +28,43 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 }
 
 func (l *CreateLogic) Create(in *order.CreateRequest) (*order.CreateResponse, error) {
-	// todo: add your logic here and delete this line
-
-	if _, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoRequest{Id: in.Uid}); err != nil {
+	// 查询用户是否存在
+	_, err := l.svcCtx.UserRpc.UserInfo(l.ctx, &user.UserInfoRequest{
+		Id: in.Uid,
+	})
+	if err != nil {
 		return nil, err
 	}
+
+	// 查询产品是否存在
 	productRes, err := l.svcCtx.ProductRpc.Detail(l.ctx, &product.DetailRequest{
 		Id: in.Pid,
 	})
 	if err != nil {
 		return nil, err
 	}
+	// 判断产品库存是否充足
 	if productRes.Stock <= 0 {
 		return nil, status.Error(500, "产品库存不足")
 	}
-	newOder := model.Order{
-		Uid:    uint64(in.Uid),
-		Pid:    uint64(in.Pid),
-		Amount: uint(in.Amount),
+
+	newOrder := model.Order{
+		Uid:    in.Uid,
+		Pid:    in.Pid,
+		Amount: in.Amount,
 		Status: 0,
 	}
-	if err1 := l.svcCtx.OrderModel.Create(&newOder); err1 != nil {
+	// 创建订单
+	res, err := l.svcCtx.OrderModel.Insert(l.ctx, &newOrder)
+	if err != nil {
 		return nil, status.Error(500, err.Error())
 	}
-	//这里的产品库存更新存在数据一致性问题，在以往的项目中我们会使用数据库的事务进行这一系列的操作来保证数据的一致性。但是因为我们这边把“订单”和“产品”分成了不同的微服务，在实际的项目中他们可能拥有不同的数据库，所以我们要考虑在跨服务的情况下还能保证数据的一致性，这就涉及到了分布式事务的使用，在后面的章节中我们将介绍使用分布式事务来修改这个下单的逻辑。
+
+	newOrder.Id, err = res.LastInsertId()
+	if err != nil {
+		return nil, status.Error(500, err.Error())
+	}
+	// 更新产品库存
 	_, err = l.svcCtx.ProductRpc.Update(l.ctx, &product.UpdateRequest{
 		Id:     productRes.Id,
 		Name:   productRes.Name,
@@ -64,5 +77,7 @@ func (l *CreateLogic) Create(in *order.CreateRequest) (*order.CreateResponse, er
 		return nil, err
 	}
 
-	return &order.CreateResponse{Id: int64(newOder.ID)}, nil
+	return &order.CreateResponse{
+		Id: newOrder.Id,
+	}, nil
 }

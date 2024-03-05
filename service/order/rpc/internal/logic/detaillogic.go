@@ -26,20 +26,20 @@ func NewDetailLogic(ctx context.Context, svcCtx *svc.ServiceContext) *DetailLogi
 }
 
 func (l *DetailLogic) Detail(in *order.DetailRequest) (*order.DetailResponse, error) {
-	// todo: add your logic here and delete this line
-	var res = &model.Order{}
-	if ok, err := model.HaveOderByid(l.svcCtx.OrderModel, in.Id, res); ok {
-		return nil, status.Error(100, "订单不存在")
-	} else if err != nil {
-		return nil, err
+	// 查询订单是否存在
+	res, err := l.svcCtx.OrderModel.FindOne(l.ctx, in.Id)
+	if err != nil {
+		if err == model.ErrNotFound {
+			return nil, status.Error(100, "订单不存在")
+		}
+		return nil, status.Error(500, err.Error())
 	}
 
 	return &order.DetailResponse{
-		Id:     int64(res.ID),
-		Uid:    int64(res.Uid),
-		Pid:    int64(res.Pid),
-		Amount: int64(res.Amount),
-		Status: int64(res.Status),
+		Id:     res.Id,
+		Uid:    res.Uid,
+		Pid:    res.Pid,
+		Amount: res.Amount,
+		Status: res.Status,
 	}, nil
-
 }
