@@ -18,3 +18,7 @@ PayRpc:
     Hosts:
       - etcd:2379
     Key: pay.rpc
+Prometheus:
+  Host: 0.0.0.0
+  Port: 9083
+  Path: /metrics
