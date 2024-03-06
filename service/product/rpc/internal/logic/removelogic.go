@@ -2,9 +2,7 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"google.golang.org/grpc/status"
-	"gorm.io/gorm"
 	"mall/service/product/model"
 
 	"mall/service/product/rpc/internal/svc"
@@ -28,14 +26,16 @@ func NewRemoveLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RemoveLogi
 }
 
 func (l *RemoveLogic) Remove(in *product.RemoveRequest) (*product.RemoveResponse, error) {
-	// todo: add your logic here and delete this line
-	var newproduct = &model.Product{}
-	if err := l.svcCtx.ProductModel.Where("id=?", in.Id).First(&newproduct).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, status.Error(100, "没有该物品")
-	} else if err != nil {
+	// 查询产品是否存在
+	res, err := l.svcCtx.ProductModel.FindOne(l.ctx, in.Id)
+	if err != nil {
+		if err == model.ErrNotFound {
+			return nil, status.Error(100, "产品不存在")
+		}
 		return nil, status.Error(500, err.Error())
 	}
-	if err := l.svcCtx.ProductModel.Delete(&newproduct).Error; err != nil {
+	err = l.svcCtx.ProductModel.Delete(l.ctx, res.Id)
+	if err != nil {
 		return nil, status.Error(500, err.Error())
 	}
 	return &product.RemoveResponse{}, nil

@@ -27,19 +27,25 @@ func NewCreateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *CreateLogi
 
 func (l *CreateLogic) Create(in *product.CreateRequest) (*product.CreateResponse, error) {
 	// todo: add your logic here and delete this line
-	if model.HavaProductByName(l.svcCtx.ProductModel, in.Name) {
-		return nil, status.Error(100, "重复商品加入")
-	}
-	newprodcut := model.Product{
+	newProduct := model.Product{
 		Name:   in.Name,
 		Desc:   in.Desc,
 		Stock:  in.Stock,
 		Amount: in.Amount,
 		Status: in.Status,
 	}
-	res := l.svcCtx.ProductModel.Create(&newprodcut)
-	if res.Error != nil {
-		return nil, status.Error(500, res.Error.Error())
+
+	res, err := l.svcCtx.ProductModel.Insert(l.ctx, &newProduct)
+	if err != nil {
+		return nil, status.Error(500, err.Error())
 	}
-	return &product.CreateResponse{Id: int64(newprodcut.ID)}, nil
+
+	newProduct.Id, err = res.LastInsertId()
+	if err != nil {
+		return nil, status.Error(500, err.Error())
+	}
+
+	return &product.CreateResponse{
+		Id: newProduct.Id,
+	}, nil
 }

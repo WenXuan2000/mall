@@ -2,9 +2,7 @@ package logic
 
 import (
 	"context"
-	"github.com/pkg/errors"
 	"google.golang.org/grpc/status"
-	"gorm.io/gorm"
 	"mall/service/product/model"
 	"mall/service/product/rpc/internal/svc"
 	"mall/service/product/rpc/types/product"
@@ -28,29 +26,34 @@ func NewUpdateLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UpdateLogi
 
 func (l *UpdateLogic) Update(in *product.UpdateRequest) (*product.UpdateResponse, error) {
 	// todo: add your logic here and delete this line
-	var newproduct = &model.Product{}
-	if err := l.svcCtx.ProductModel.Where("id=?", in.Id).First(&newproduct).Error; errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, status.Error(100, "没有该物品")
-	} else if err != nil {
+	res, err := l.svcCtx.ProductModel.FindOne(l.ctx, in.Id)
+	if err != nil {
+		if err == model.ErrNotFound {
+			return nil, status.Error(100, "产品不存在")
+		}
 		return nil, status.Error(500, err.Error())
 	}
+
 	if in.Name != "" {
-		newproduct.Name = in.Name
+		res.Name = in.Name
 	}
 	if in.Desc != "" {
-		newproduct.Desc = in.Desc
+		res.Desc = in.Desc
 	}
 	if in.Stock != 0 {
-		newproduct.Stock = in.Stock
+		res.Stock = in.Stock
 	}
 	if in.Amount != 0 {
-		newproduct.Amount = in.Amount
+		res.Amount = in.Amount
 	}
 	if in.Status != 0 {
-		newproduct.Status = in.Status
+		res.Status = in.Status
 	}
-	if err := l.svcCtx.ProductModel.Save(&newproduct).Error; err != nil {
-		return nil, status.Error(500, "无法保存")
+
+	err = l.svcCtx.ProductModel.Update(l.ctx, res)
+	if err != nil {
+		return nil, status.Error(500, err.Error())
 	}
+
 	return &product.UpdateResponse{}, nil
 }
