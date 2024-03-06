@@ -12,7 +12,7 @@ make userrpc
 ## 与原项目不同之处：
 1. 利用Redis完成Token 自动续期方案。
 2. 修复原始项目中的一些代码错误符合最新的版本(2024.3)。
-3. 在main分支有gorm的应用，但是由于需要用的redis，这里将gorm替换成go-zero自带的数据库操作方法。
+3. 在main分支有gorm的应用，但是由于需要用redis，这里将gorm替换成go-zero自带的数据库操作方法。
 
 ## 项目技术栈
 
