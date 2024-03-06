@@ -53,7 +53,7 @@ func (m *defaultOrderModel) FindOneByUid(ctx context.Context, uid int64) (*Order
 	var resp Order
 
 	query := fmt.Sprintf("select %s from %s where `uid` = ? order by create_time desc limit 1", orderRows, m.table)
-	err := m.QueryRowsNoCacheCtx(ctx, &resp, query, uid)
+	err := m.QueryRowNoCacheCtx(ctx, &resp, query, uid)
 
 	switch err {
 	case nil:

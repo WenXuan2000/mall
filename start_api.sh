@@ -10,7 +10,6 @@ generate_paths() {
 # 启动服务的函数
 start_service() {
   generate_paths "$1"
-  go run "${RPC_PATH}/${SRC_FILE}.go" -f "${RPC_PATH}/etc/${SRC_FILE}.yaml" &
   go run "${API_PATH}/${SRC_FILE}.go" -f "${API_PATH}/etc/${SRC_FILE}.yaml" &
 }
 
