@@ -1,22 +1,20 @@
 package svc
 
 import (
-	"gorm.io/gorm"
-	"mall/common/modeInit"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 	"mall/service/user/model"
 	"mall/service/user/rpc/internal/config"
 )
 
 type ServiceContext struct {
 	Config    config.Config
-	UserModel *gorm.DB
+	UserModel model.UserModel
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-	db := modeInit.InitGorm(c.Mysql.DataSource)
-	db.AutoMigrate(&model.User{})
+	conn := sqlx.NewMysql(c.Mysql.DataSource)
 	return &ServiceContext{
 		Config:    c,
-		UserModel: db,
+		UserModel: model.NewUserModel(conn, c.CacheRedis),
 	}
 }

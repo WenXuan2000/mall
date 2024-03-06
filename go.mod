@@ -1,16 +1,16 @@
 module mall
 
-go 1.21
+go 1.20
 
-toolchain go1.21.7
+//go 1.21
+//
+//toolchain go1.21.7
 
 require (
 	github.com/dtm-labs/driver-gozero v0.0.7
 	github.com/dtm-labs/dtmcli v1.13.0
 	github.com/dtm-labs/dtmgrpc v1.13.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
-	github.com/jinzhu/gorm v1.9.16
-	github.com/pkg/errors v0.9.1
 	github.com/zeromicro/go-zero v1.6.3
 	golang.org/x/crypto v0.21.0
 	google.golang.org/grpc v1.62.1
@@ -82,6 +82,7 @@ require (
 	github.com/natefinch/lumberjack v2.0.0+incompatible // indirect
 	github.com/openzipkin/zipkin-go v0.4.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.18.0 // indirect
 	github.com/prometheus/client_model v0.5.0 // indirect
 	github.com/prometheus/common v0.45.0 // indirect

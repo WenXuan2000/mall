@@ -26,12 +26,13 @@ func NewLoginLogic(ctx context.Context, svcCtx *svc.ServiceContext) *LoginLogic 
 }
 
 func (l *LoginLogic) Login(in *user.LoginRequest) (*user.LoginResponse, error) {
-	// todo: add your logic here and delete this line
 	// 查询用户是否存在
-	var res model.User
-	err := l.svcCtx.UserModel.Take(&res, "mobile = ?", in.Mobile).Error
+	res, err := l.svcCtx.UserModel.FindOneByMobile(l.ctx, in.Mobile)
 	if err != nil {
-		return nil, status.Error(100, "用户不存在")
+		if err == model.ErrNotFound {
+			return nil, status.Error(100, "用户不存在")
+		}
+		return nil, status.Error(500, err.Error())
 	}
 
 	// 判断密码是否正确
@@ -41,10 +42,9 @@ func (l *LoginLogic) Login(in *user.LoginRequest) (*user.LoginResponse, error) {
 	}
 
 	return &user.LoginResponse{
-		Id:     int64(res.Model.ID),
+		Id:     res.Id,
 		Name:   res.Name,
 		Gender: res.Gender,
 		Mobile: res.Mobile,
 	}, nil
-
 }
