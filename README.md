@@ -33,3 +33,11 @@ make userrpc
 8. **Jaeger:** 分布式追踪系统，用于监控和分析应用程序性能和请求流程.
 
 9. **docker-compose:** 用于编排和管理容器化应用程序的工具，通过定义和运行多个Docker容器来简化部署过程.
+## 实现功能
+![img.png](img.png)
+![img_1.png](img_1.png)
+![img_2.png](img_2.png)
+![img_3.png](img_3.png)
+## TODO
+- [ ] 为产品添加封面--知识点OSS对象存储-文件上传
+- [ ] 消息队列kafka的使用
