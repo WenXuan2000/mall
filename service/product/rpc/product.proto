@@ -9,6 +9,7 @@ message CreateRequest {
   int64 Stock = 3;
   int64 Amount = 4;
   int64 Status = 5;
+  string Cover = 6;
 }
 message CreateResponse {
   int64 id = 1;

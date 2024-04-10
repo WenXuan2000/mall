@@ -30,6 +30,7 @@ func (l *CreateLogic) Create(req *types.CreateRequest) (resp *types.CreateRespon
 		Name:   req.Name,
 		Desc:   req.Desc,
 		Stock:  req.Stock,
+		Cover:  req.Cover,
 		Amount: req.Amount,
 		Status: req.Status,
 	})

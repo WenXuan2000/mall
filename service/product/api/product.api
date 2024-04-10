@@ -1,10 +1,15 @@
 syntax = "v1"
 
 type (
+	// 产品封面上传
+	UploadCoverResponse {
+		CoverUrl string `json:"cover_url"`
+	}
 	// 产品创建
 	CreateRequest {
 		Name   string `json:"name"`
 		Desc   string `json:"desc"`
+		Cover  string `json:"cover"`
 		Stock  int64  `json:"stock"`
 		Amount int64  `json:"amount"`
 		Status int64  `json:"status"`
@@ -49,6 +54,9 @@ type (
 	jwt: Auth
 )
 service Product {
+	@handler UploadCover
+	post /api/product/cover returns (UploadCoverResponse)
+
 	@handler Create
 	post /api/product/create (CreateRequest) returns (CreateResponse)
 

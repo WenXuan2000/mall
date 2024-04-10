@@ -5,6 +5,7 @@ CREATE TABLE `product` (
    `stock` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '产品库存',
    `amount` int(10) unsigned NOT NULL DEFAULT '0'  COMMENT '产品金额',
    `status` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '产品状态',
+   `cover` varchar(255) NOT NULL DEFAULT '' COMMENT '产品封面',
    `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
     `update_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
      PRIMARY KEY (`id`)

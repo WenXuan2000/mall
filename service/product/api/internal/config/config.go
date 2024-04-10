@@ -12,4 +12,8 @@ type Config struct {
 		AccessExpire int64
 	}
 	ProductRpc zrpc.RpcClientConf
+	TenCOS     struct {
+		SECRETID  string
+		SECRETKEY string
+	}
 }
