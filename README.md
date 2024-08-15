@@ -39,5 +39,5 @@ make userrpc
 ![img_2.png](img_2.png)
 ![img_3.png](img_3.png)
 ## TODO
-- [ ] 为产品添加封面--知识点OSS对象存储-文件上传
-- [ ] 消息队列kafka的使用
+- [*] 为产品添加封面--知识点OSS对象存储-文件上传
+- [*] 消息队列kafka的使用
