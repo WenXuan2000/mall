@@ -47,7 +47,17 @@ func (s *ProductServer) DecrStock(ctx context.Context, in *product.DecrStockRequ
 	return l.DecrStock(in)
 }
 
+func (s *ProductServer) DecrStockWODTM(ctx context.Context, in *product.DecrStockRequest) (*product.DecrStockResponse, error) {
+	l := logic.NewDecrStockWODTMLogic(ctx, s.svcCtx)
+	return l.DecrStockWODTM(in)
+}
+
 func (s *ProductServer) DecrStockRevert(ctx context.Context, in *product.DecrStockRequest) (*product.DecrStockResponse, error) {
 	l := logic.NewDecrStockRevertLogic(ctx, s.svcCtx)
 	return l.DecrStockRevert(in)
+}
+
+func (s *ProductServer) DetailList(ctx context.Context, in *product.DetailListRequest) (*product.DetailListResponse, error) {
+	l := logic.NewDetailListLogic(ctx, s.svcCtx)
+	return l.DetailList(in)
 }

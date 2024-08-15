@@ -3,12 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/zeromicro/go-zero/core/logx"
 
-	"mall/service/user/rpc/internal/config"
-	"mall/service/user/rpc/internal/server"
-	"mall/service/user/rpc/internal/svc"
-	"mall/service/user/rpc/types/user"
+	"mall/service/seckill/rpc/internal/config"
+	"mall/service/seckill/rpc/internal/server"
+	"mall/service/seckill/rpc/internal/svc"
+	"mall/service/seckill/rpc/types/seckill"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -17,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/user.yaml", "the config file")
+var configFile = flag.String("f", "etc/seckill.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -25,9 +24,9 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
-	logx.DisableStat()
+
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		user.RegisterUserServer(grpcServer, server.NewUserServer(ctx))
+		seckill.RegisterSeckillServer(grpcServer, server.NewSeckillServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

@@ -24,7 +24,9 @@ const (
 	Product_Remove_FullMethodName          = "/product.Product/Remove"
 	Product_Detail_FullMethodName          = "/product.Product/Detail"
 	Product_DecrStock_FullMethodName       = "/product.Product/DecrStock"
+	Product_DecrStockWODTM_FullMethodName  = "/product.Product/DecrStockWODTM"
 	Product_DecrStockRevert_FullMethodName = "/product.Product/DecrStockRevert"
+	Product_DetailList_FullMethodName      = "/product.Product/DetailList"
 )
 
 // ProductClient is the client API for Product service.
@@ -36,7 +38,9 @@ type ProductClient interface {
 	Remove(ctx context.Context, in *RemoveRequest, opts ...grpc.CallOption) (*RemoveResponse, error)
 	Detail(ctx context.Context, in *DetailRequest, opts ...grpc.CallOption) (*DetailResponse, error)
 	DecrStock(ctx context.Context, in *DecrStockRequest, opts ...grpc.CallOption) (*DecrStockResponse, error)
+	DecrStockWODTM(ctx context.Context, in *DecrStockRequest, opts ...grpc.CallOption) (*DecrStockResponse, error)
 	DecrStockRevert(ctx context.Context, in *DecrStockRequest, opts ...grpc.CallOption) (*DecrStockResponse, error)
+	DetailList(ctx context.Context, in *DetailListRequest, opts ...grpc.CallOption) (*DetailListResponse, error)
 }
 
 type productClient struct {
@@ -92,9 +96,27 @@ func (c *productClient) DecrStock(ctx context.Context, in *DecrStockRequest, opt
 	return out, nil
 }
 
+func (c *productClient) DecrStockWODTM(ctx context.Context, in *DecrStockRequest, opts ...grpc.CallOption) (*DecrStockResponse, error) {
+	out := new(DecrStockResponse)
+	err := c.cc.Invoke(ctx, Product_DecrStockWODTM_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *productClient) DecrStockRevert(ctx context.Context, in *DecrStockRequest, opts ...grpc.CallOption) (*DecrStockResponse, error) {
 	out := new(DecrStockResponse)
 	err := c.cc.Invoke(ctx, Product_DecrStockRevert_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *productClient) DetailList(ctx context.Context, in *DetailListRequest, opts ...grpc.CallOption) (*DetailListResponse, error) {
+	out := new(DetailListResponse)
+	err := c.cc.Invoke(ctx, Product_DetailList_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +132,9 @@ type ProductServer interface {
 	Remove(context.Context, *RemoveRequest) (*RemoveResponse, error)
 	Detail(context.Context, *DetailRequest) (*DetailResponse, error)
 	DecrStock(context.Context, *DecrStockRequest) (*DecrStockResponse, error)
+	DecrStockWODTM(context.Context, *DecrStockRequest) (*DecrStockResponse, error)
 	DecrStockRevert(context.Context, *DecrStockRequest) (*DecrStockResponse, error)
+	DetailList(context.Context, *DetailListRequest) (*DetailListResponse, error)
 	mustEmbedUnimplementedProductServer()
 }
 
@@ -133,8 +157,14 @@ func (UnimplementedProductServer) Detail(context.Context, *DetailRequest) (*Deta
 func (UnimplementedProductServer) DecrStock(context.Context, *DecrStockRequest) (*DecrStockResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecrStock not implemented")
 }
+func (UnimplementedProductServer) DecrStockWODTM(context.Context, *DecrStockRequest) (*DecrStockResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DecrStockWODTM not implemented")
+}
 func (UnimplementedProductServer) DecrStockRevert(context.Context, *DecrStockRequest) (*DecrStockResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DecrStockRevert not implemented")
+}
+func (UnimplementedProductServer) DetailList(context.Context, *DetailListRequest) (*DetailListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DetailList not implemented")
 }
 func (UnimplementedProductServer) mustEmbedUnimplementedProductServer() {}
 
@@ -239,6 +269,24 @@ func _Product_DecrStock_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Product_DecrStockWODTM_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DecrStockRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServer).DecrStockWODTM(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Product_DecrStockWODTM_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServer).DecrStockWODTM(ctx, req.(*DecrStockRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Product_DecrStockRevert_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DecrStockRequest)
 	if err := dec(in); err != nil {
@@ -253,6 +301,24 @@ func _Product_DecrStockRevert_Handler(srv interface{}, ctx context.Context, dec 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ProductServer).DecrStockRevert(ctx, req.(*DecrStockRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Product_DetailList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DetailListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ProductServer).DetailList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Product_DetailList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ProductServer).DetailList(ctx, req.(*DetailListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -285,8 +351,16 @@ var Product_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Product_DecrStock_Handler,
 		},
 		{
+			MethodName: "DecrStockWODTM",
+			Handler:    _Product_DecrStockWODTM_Handler,
+		},
+		{
 			MethodName: "DecrStockRevert",
 			Handler:    _Product_DecrStockRevert_Handler,
+		},
+		{
+			MethodName: "DetailList",
+			Handler:    _Product_DetailList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"google.golang.org/grpc/status"
 	"mall/service/product/model"
 
@@ -29,6 +30,7 @@ func (l *DetailLogic) Detail(in *product.DetailRequest) (*product.DetailResponse
 	// todo: add your logic here and delete this line
 	res, err := l.svcCtx.ProductModel.FindOne(l.ctx, in.Id)
 	if err != nil {
+		fmt.Println(in.Id)
 		if err == model.ErrNotFound {
 			return nil, status.Error(100, "产品不存在")
 		}

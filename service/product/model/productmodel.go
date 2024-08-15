@@ -16,6 +16,7 @@ type (
 	ProductModel interface {
 		productModel
 		TxAdjustStock(ctx context.Context, tx *sql.Tx, id int64, delta int) (sql.Result, error)
+		//AdjustStock(ctx context.Context, tx *sql.Tx, id int64, delta int) (sql.Result, error)
 	}
 
 	customProductModel struct {
@@ -36,3 +37,11 @@ func (m *defaultProductModel) TxAdjustStock(ctx context.Context, tx *sql.Tx, id 
 		return tx.ExecContext(ctx, query, delta, delta, id)
 	}, productIdKey)
 }
+
+//func (m *defaultProductModel) AdjustStock(ctx context.Context, id int64, delta int) (sql.Result, error) {
+//	productIdKey := fmt.Sprintf("%s%v", cacheProductIdPrefix, id)
+//	return m.Exec(func(conn sqlx.SqlConn) (result sql.Result, err error) {
+//		query := fmt.Sprintf("update %s set stock=stock+? where stock >= -? and id=?", m.table)
+//		return tx.ExecContext(ctx, query, delta, delta, id)
+//	}, productIdKey)
+//}

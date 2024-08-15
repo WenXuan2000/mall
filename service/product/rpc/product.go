@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"mall/service/product/rpc/internal/config"
 	"mall/service/product/rpc/internal/server"
@@ -24,7 +25,7 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
-
+	logx.SetLevel(logx.ErrorLevel)
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		product.RegisterProductServer(grpcServer, server.NewProductServer(ctx))
 

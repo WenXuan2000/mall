@@ -49,6 +49,20 @@ message DetailResponse {
   int64 Amount = 5;
   int64 Status = 6;
 }
+message DetailListRequest {
+  string id = 1;
+}
+message DetailListResponse {
+  map<int64,ProductItem> products =1;
+}
+message ProductItem{
+  int64 id = 1;
+  string Name = 2;
+  string Desc = 3;
+  int64 Stock = 4;
+  int64 Amount = 5;
+  int64 Status = 6;
+}
 // 产品详情
 // 减产品库存
 message DecrStockRequest {
@@ -65,6 +79,8 @@ service Product {
   rpc Remove(RemoveRequest) returns(RemoveResponse);
   rpc Detail(DetailRequest) returns(DetailResponse);
   rpc DecrStock(DecrStockRequest) returns(DecrStockResponse);
+  rpc DecrStockWODTM(DecrStockRequest) returns(DecrStockResponse);
   rpc DecrStockRevert(DecrStockRequest) returns(DecrStockResponse);
+  rpc DetailList(DetailListRequest) returns(DetailListResponse);
 }
 //$ goctl rpc protoc product.proto --go_out=./types --go-grpc_out=./types --zrpc_out=.

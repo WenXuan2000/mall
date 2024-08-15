@@ -27,6 +27,11 @@ func (s *OrderServer) Create(ctx context.Context, in *order.CreateRequest) (*ord
 	return l.Create(in)
 }
 
+func (s *OrderServer) CreateWODTM(ctx context.Context, in *order.CreateRequest) (*order.CreateResponse, error) {
+	l := logic.NewCreateWODTMLogic(ctx, s.svcCtx)
+	return l.CreateWODTM(in)
+}
+
 func (s *OrderServer) CreateRevert(ctx context.Context, in *order.CreateRequest) (*order.CreateResponse, error) {
 	l := logic.NewCreateRevertLogic(ctx, s.svcCtx)
 	return l.CreateRevert(in)

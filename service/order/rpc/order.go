@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"mall/service/order/rpc/internal/config"
 	"mall/service/order/rpc/internal/server"
@@ -24,7 +25,7 @@ func main() {
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
 	ctx := svc.NewServiceContext(c)
-
+	logx.SetLevel(logx.ErrorLevel)
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
 		order.RegisterOrderServer(grpcServer, server.NewOrderServer(ctx))
 

@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
 
 	"mall/service/user/api/internal/config"
 	"mall/service/user/api/internal/handler"
@@ -19,7 +20,7 @@ func main() {
 
 	var c config.Config
 	conf.MustLoad(*configFile, &c)
-
+	logx.DisableStat()
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
 
